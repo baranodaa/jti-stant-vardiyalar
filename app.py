@@ -4,7 +4,7 @@ import random
 st.set_page_config(page_title="JTI Stant Vardiya Sihirbazı", page_icon="🎯", layout="wide")
 
 st.title("🎯 JTI Stant Vardiya Sihirbazı")
-st.write("Çalışanların müsaitliklerini sol menüden ayarla, özel kuralını seç ve butona basarak adil haftalık çizelgeyi anında cebine indir!")
+st.write("Çalışanların müsaitliklerini sol menüden ayarla, özel kurallarını (3 adet) seç ve butona basarak adil haftalık çizelgeyi anında cebine indir!")
 
 # 1. Çalışan İsimleri (Büyük/Küçük Harf Düzenlenmiş)
 kizlar = [
@@ -37,23 +37,47 @@ for kiz in kizlar:
     )
 
 st.sidebar.markdown("---")
-st.sidebar.header("⚙️ Özel / Sabit Atamalar")
-sabit_gun = st.sidebar.selectbox("Özel Atama Yapılacak Gün (İsteğe Bağlı)", ["Yok"] + gunler)
-sabit_stant = st.sidebar.selectbox("Hangi Stant?", list(stantlar.keys()))
-sabit_kiz = st.sidebar.selectbox("Hangi Çalışan Kesin Orada Olsun?", kizlar)
+st.sidebar.header("⚙️ Özel / Sabit Atamalar (3 Adet)")
 
-# 3. Algoritma ve Çizelgeyi Oluşturma Butonu
+# 1. Sabit Atama
+st.sidebar.subheader("1. Sabit Atama")
+sabit_gun1 = st.sidebar.selectbox("Gün 1", ["Yok"] + gunler, key="g1")
+sabit_stant1 = st.sidebar.selectbox("Stant 1", list(stantlar.keys()), key="s1")
+sabit_kiz1 = st.sidebar.selectbox("Çalışan 1", kizlar, key="k1")
+
+st.sidebar.markdown("---")
+# 2. Sabit Atama
+st.sidebar.subheader("2. Sabit Atama")
+sabit_gun2 = st.sidebar.selectbox("Gün 2", ["Yok"] + gunler, key="g2")
+sabit_stant2 = st.sidebar.selectbox("Stant 2", list(stantlar.keys()), key="s2")
+sabit_kiz2 = st.sidebar.selectbox("Çalışan 2", kizlar, key="k2")
+
+st.sidebar.markdown("---")
+# 3. Sabit Atama
+st.sidebar.subheader("3. Sabit Atama")
+sabit_gun3 = st.sidebar.selectbox("Gün 3", ["Yok"] + gunler, key="g3")
+sabit_stant3 = st.sidebar.selectbox("Stant 3", list(stantlar.keys()), key="s3")
+sabit_kiz3 = st.sidebar.selectbox("Çalışan 3", kizlar, key="k3")
+
+# 3. Algoritma and Çizelgeyi Oluşturma Butonu
 if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
     calisma_sayilari = {kiz: 0 for kiz in kizlar}
     cizelge = {gun: {} for gun in gunler}
     
-    # Sabit atama varsa önce onu çakalım
-    if sabit_gun != "Yok":
-        sup_adi = stantlar[sabit_stant]['sup']
-        cizelge[sabit_gun][sabit_stant] = {'kiz': sabit_kiz, 'sup': sup_adi}
-        calisma_sayilari[sabit_kiz] += 1
+    # 3 Sabit atamayı bir listeye koyup sırayla işleyelim
+    sabit_atamalar = [
+        (sabit_gun1, sabit_stant1, sabit_kiz1),
+        (sabit_gun2, sabit_stant2, sabit_kiz2),
+        (sabit_gun3, sabit_stant3, sabit_kiz3)
+    ]
+    
+    for g, stnt, k in sabit_atamalar:
+        if g != "Yok":
+            sup_adi = stantlar[stnt]['sup']
+            cizelge[g][stnt] = {'kiz': k, 'sup': sup_adi}
+            calisma_sayilari[k] += 1
 
-    # Dağıtım motoru
+    # Dağıtım motoru (Geri kalan boşlukları doldurur)
     for gun in gunler:
         for stant, bilgi in stantlar.items():
             if stant in cizelge[gun]:
@@ -79,7 +103,7 @@ if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
             cizelge[gun][stant] = {'kiz': secilen_kiz, 'sup': sup_adi}
 
     # Sonuçları ekrana basalım
-    st.success("JTI stant vardiya çizelgesi başarıyla hazırlandı şefim! 🎉")
+    st.success("JTI stant vardiya çizelgesi 3 özel atama kuralıyla birlikte başarıyla hazırlandı şefim! 🎉")
     
     cols = st.columns(2)
     idx = 0
