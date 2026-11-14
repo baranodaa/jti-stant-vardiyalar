@@ -18,7 +18,6 @@ stantlar = {
 st.sidebar.header("🗓️ Kızların Müsaitlik Günleri")
 musaitlik = {}
 for kiz in kizlar:
-    # Varsayılan olarak her kız haftanın 6 günü müsait başlasın, sen istediğini kaldırabilirsin
     musaitlik[kiz] = st.sidebar.multiselect(
         f"{kiz.upper()} Müsait Günler",
         gunler,
@@ -47,7 +46,6 @@ if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
             if stant in cizelge[gun]:
                 continue
             
-            # O gün müsait olan ve o gün başka stantta olmayan kızları bul
             bosta_olanlar = []
             for k in kizlar:
                 bugun_calisiyor = k in cizelge[gun].values()
@@ -58,7 +56,6 @@ if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
                 cizelge[gun][stant] = "⚠️ Uygun Kız Yok!"
                 continue
             
-            # Adil dağılım: O ana kadar en az çalışan kızlara öncelik ver
             min_calisma = min(calisma_sayilari[k] for k in bosta_olanlar)
             adaylar = [k for k in bosta_olanlar if calisma_sayilari[k] == min_calisma]
             
@@ -69,7 +66,6 @@ if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
     # Sonuçları ekrana basalım
     st.success("JTI stant vardiya çizelgesi başarıyla hazırlandı şefim! 🎉")
     
-    # Günleri yan yana iki sütun halinde şık gösterelim
     cols = st.columns(2)
     idx = 0
     for gun, gunluk_stantlar in cizelge.items():
@@ -85,4 +81,4 @@ if st.button("✨ Vardiya Çizelgesini Oluştur!", type="primary"):
     col_stats = st.columns(len(kizlar))
     for i, (kiz, sayi) in enumerate(calisma_sayilari.items()):
         with col_stats[i]:
-            st.metric(label=kiz.upper(), value=f"{sayi} gün")v
+            st.metric(label=kiz.upper(), value=f"{sayi} gün")
